@@ -4,7 +4,6 @@ kind: Kustomization
 resources:
 # https://knative.dev/docs/install/yaml-install/serving/install-serving-with-yaml
 # Knative Serving
-- https://github.com/knative/serving/releases/download/knative-v1.6.0/serving-crds.yaml
 - https://github.com/knative/serving/releases/download/knative-v1.6.0/serving-core.yaml
 
 # Install a networking layer
@@ -13,7 +12,6 @@ resources:
 
 # https://knative.dev/docs/install/yaml-install/eventing/install-eventing-with-yaml
 # Knative Eventing
-- https://github.com/knative/eventing/releases/download/knative-v1.6.0/eventing-crds.yaml
 - https://github.com/knative/eventing/releases/download/knative-v1.6.0/eventing-core.yaml
 
 # Install a multi-tenant GitHub source run the command
