@@ -1,0 +1,18 @@
+zone:
+  name:
+
+external:
+  namespace:
+  gatewayClass:
+  gateway:
+    name:
+  service:
+    name:
+
+internal:
+  namespace:
+  gatewayClass:
+  gateway:
+    name:
+  service:
+    name:
