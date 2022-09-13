@@ -1,0 +1,11 @@
+{{- if .Values.configTracing -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-tracing
+  labels:
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/component: controller
+data:
+  {{- toYaml .Values.configTracing | nindent 2 }}
+{{- end -}}

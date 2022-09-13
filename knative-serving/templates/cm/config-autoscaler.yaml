@@ -1,0 +1,11 @@
+{{- if .Values.configAutoscaler -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-autoscaler
+  labels:
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/component: controller
+data:
+  {{- toYaml .Values.configAutoscaler | nindent 2 }}
+{{- end -}}

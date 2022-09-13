@@ -1,0 +1,11 @@
+{{- if .Values.configObservability -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-observability
+  labels:
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/component: controller
+data:
+  {{- toYaml .Values.configObservability | nindent 2 }}
+{{- end -}}

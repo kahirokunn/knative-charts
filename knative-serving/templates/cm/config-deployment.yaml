@@ -1,0 +1,11 @@
+{{- if .Values.configDeployment -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-deployment
+  labels:
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/component: controller
+data:
+  {{- toYaml .Values.configDeployment | nindent 2 }}
+{{- end -}}

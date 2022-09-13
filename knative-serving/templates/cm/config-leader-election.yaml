@@ -1,0 +1,11 @@
+{{- if .Values.configLeaderElection -}}
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-leader-election
+  labels:
+    app.kubernetes.io/name: knative-serving
+    app.kubernetes.io/component: controller
+data:
+  {{- toYaml .Values.configLeaderElection | nindent 2 }}
+{{- end -}}
