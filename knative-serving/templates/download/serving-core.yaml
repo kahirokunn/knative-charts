@@ -4331,40 +4331,6 @@ spec:
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  # Do not drop -ctrl-ca suffix as control-protocol requires it.
-  # https://github.com/knative-sandbox/control-protocol/blob/main/pkg/certificates/reconciler/controller.go
-  name: serving-certs-ctrl-ca
-  namespace: '{{ .Release.Namespace }}'
-
-# The data is populated when internal-encryption is enabled.
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: knative-serving-certs
-  namespace: '{{ .Release.Namespace }}'
-  labels:
-    serving-certs-ctrl: "data-plane"
-    networking.internal.knative.dev/certificate-uid: "serving-certs"
-# The data is populated when internal-encryption is enabled.
-
-# Copyright 2018 The Knative Authors
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
----
 apiVersion: caching.internal.knative.dev/v1alpha1
 kind: Image
 metadata:
@@ -5416,31 +5382,6 @@ webhooks:
 # See the License for the specific language governing permissions and
 # limitations under the License.
 ---
-apiVersion: v1
-kind: Secret
-metadata:
-  name: domainmapping-webhook-certs
-  namespace: '{{ .Release.Namespace }}'
-  labels:
-    app.kubernetes.io/component: domain-mapping
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
-# The data is populated at install time.
-
-# Copyright 2020 The Knative Authors
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     https://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
----
 apiVersion: admissionregistration.k8s.io/v1
 kind: ValidatingWebhookConfiguration
 metadata:
@@ -5543,14 +5484,3 @@ webhooks:
 # WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 # See the License for the specific language governing permissions and
 # limitations under the License.
----
-apiVersion: v1
-kind: Secret
-metadata:
-  name: webhook-certs
-  namespace: '{{ .Release.Namespace }}'
-  labels:
-    app.kubernetes.io/component: webhook
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.7.1"
-# The data is populated at install time.

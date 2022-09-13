@@ -11,6 +11,8 @@ download-knative-serving:
 
 	# remove all config
 	cat knative-serving/templates/download/serving-core.yaml | yq eval '. | select(.metadata.name | test("config-.*") | not)' | sponge knative-serving/templates/download/serving-core.yaml
+	# remove all secret
+	cat knative-serving/templates/download/serving-core.yaml | yq eval '. | select(.kind | test("Secret") | not)' | sponge knative-serving/templates/download/serving-core.yaml
 	# replace namespace
 	cat knative-serving/templates/download/serving-core.yaml | yq '.metadata.namespace = "{{ .Release.Namespace }}"' | sponge knative-serving/templates/download/serving-core.yaml
 
