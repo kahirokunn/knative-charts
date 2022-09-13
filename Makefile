@@ -28,3 +28,5 @@ download-knative-serving-net-gateway-api:
 
 	# replace namespace
 	cat knative-serving-net-gateway-api/templates/download/controller.yaml | yq '.metadata.namespace = "{{ .Release.Namespace }}"' | sponge knative-serving-net-gateway-api/templates/download/controller.yaml
+	# resolve image
+	cat knative-serving-net-gateway-api/templates/download/controller.yaml | yq '.spec.template.spec.containers[0].image = "gcr.io/knative-releases/knative.dev/net-gateway-api/cmd/controller:latest"' | sponge knative-serving-net-gateway-api/templates/download/controller.yaml
