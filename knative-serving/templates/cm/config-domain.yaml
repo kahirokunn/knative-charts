@@ -1,4 +1,4 @@
-{{- if or .Values.configDomain .Values.allowEmptyConfigMap -}}
+{{- if .Values.zone.name -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
@@ -7,5 +7,5 @@ metadata:
     app.kubernetes.io/name: knative-serving
     app.kubernetes.io/component: controller
 data:
-  {{- toYaml .Values.configDomain | nindent 2 }}
+  {{ .Values.zone.name }}: ''
 {{- end -}}
