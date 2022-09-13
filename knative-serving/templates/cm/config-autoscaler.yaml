@@ -1,4 +1,4 @@
-{{- if .Values.configAutoscaler -}}
+{{- if or .Values.configAutoscaler .Values.allowEmptyConfigMap -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:

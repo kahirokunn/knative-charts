@@ -1,4 +1,4 @@
-{{- if .Values.configLeaderElection -}}
+{{- if or .Values.configLeaderElection .Values.allowEmptyConfigMap -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:

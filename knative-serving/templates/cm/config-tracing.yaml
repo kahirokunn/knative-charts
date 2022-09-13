@@ -1,4 +1,4 @@
-{{- if .Values.configTracing -}}
+{{- if or .Values.configTracing .Values.allowEmptyConfigMap -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:

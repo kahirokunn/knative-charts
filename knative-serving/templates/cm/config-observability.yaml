@@ -1,4 +1,4 @@
-{{- if .Values.configObservability -}}
+{{- if or .Values.configObservability .Values.allowEmptyConfigMap -}}
 apiVersion: v1
 kind: ConfigMap
 metadata:
