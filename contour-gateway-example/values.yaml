@@ -1,0 +1,9 @@
+external:
+  namespace: projectcontour
+  gateway:
+    name: contour-external-gateway
+
+internal:
+  namespace: projectcontour
+  gateway:
+    name: contour-internal-gateway

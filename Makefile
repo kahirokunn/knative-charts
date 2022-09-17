@@ -30,3 +30,9 @@ download-knative-serving-net-gateway-api:
 	cat knative-serving-net-gateway-api/templates/download/controller.yaml | yq '.metadata.namespace = "{{ .Release.Namespace }}"' | sponge knative-serving-net-gateway-api/templates/download/controller.yaml
 	# resolve image
 	cat knative-serving-net-gateway-api/templates/download/controller.yaml | yq '.spec.template.spec.containers[0].image = "gcr.io/knative-releases/knative.dev/net-gateway-api/cmd/controller:latest"' | sponge knative-serving-net-gateway-api/templates/download/controller.yaml
+
+download-contour-gateway:
+	# https://projectcontour.io/guides/gateway-api
+	# Option #2: Dynamically provisioned
+	-rm -rf ./contour-gateway/templates/download/*
+	wget -P ./contour-gateway/templates/download https://projectcontour.io/quickstart/contour-gateway-provisioner.yaml
