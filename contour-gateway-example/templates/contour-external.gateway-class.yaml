@@ -1,6 +1,27 @@
 kind: GatewayClass
 apiVersion: gateway.networking.k8s.io/v1beta1
 metadata:
-  name: contour-external
+  name: {{ .Values.external.gateway.class }}
 spec:
   controllerName: projectcontour.io/gateway-controller
+  parametersRef:
+    kind: ContourDeployment
+    group: projectcontour.io
+    name: {{ .Values.external.gateway.class }}
+    namespace: projectcontour
+---
+kind: ContourDeployment
+apiVersion: projectcontour.io/v1alpha1
+metadata:
+  namespace: projectcontour
+  name: {{ .Values.external.gateway.class }}
+spec:
+  envoy:
+    networkPublishing:
+      type: LoadBalancerService
+      serviceAnnotations:
+        service.beta.kubernetes.io/aws-load-balancer-type: external
+        service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: instance
+        service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "GatewayClass={{ .Values.external.gateway.class }}"
+        service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
+        service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"

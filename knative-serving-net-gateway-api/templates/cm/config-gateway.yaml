@@ -6,10 +6,10 @@ metadata:
 data:
   visibility: |
     ExternalIP:
-      class: {{ .Values.external.namespace }}
+      class: {{ .Values.external.gateway.class }}
       gateway: {{ .Values.external.namespace }}/{{ .Values.external.gateway.name }}
       service: {{ .Values.external.namespace }}/{{ .Values.external.service.name }}
     ClusterLocal:
-      class: {{ .Values.internal.namespace }}
+      class: {{ .Values.internal.gateway.class }}
       gateway: {{ .Values.internal.namespace }}/{{ .Values.internal.gateway.name }}
       service: {{ .Values.internal.namespace }}/{{ .Values.internal.service.name }}

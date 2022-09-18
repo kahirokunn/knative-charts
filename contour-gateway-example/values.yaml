@@ -1,9 +1,11 @@
 external:
   namespace: projectcontour
   gateway:
+    class: contour-external
     name: contour-external-gateway
 
 internal:
   namespace: projectcontour
   gateway:
+    class: contour-internal
     name: contour-internal-gateway

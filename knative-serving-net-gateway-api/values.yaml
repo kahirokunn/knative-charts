@@ -1,15 +1,15 @@
 external:
   namespace:
-  gatewayClass:
   gateway:
+    class:
     name:
   service:
     name:
 
 internal:
   namespace:
-  gatewayClass:
   gateway:
+    class:
     name:
   service:
     name:

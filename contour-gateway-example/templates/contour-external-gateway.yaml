@@ -4,7 +4,7 @@ metadata:
   name: {{ .Values.external.gateway.name }}
   namespace: {{ .Values.external.namespace }}
 spec:
-  gatewayClassName: contour
+  gatewayClassName: {{ .Values.external.gateway.class }}
   listeners:
     - name: http
       protocol: HTTP
