@@ -3,6 +3,11 @@ VERSION = "v1.7.1"
 setup-mac:
 	brew install sponge
 
+download-all:
+	$(MAKE) download-knative-serving
+	$(MAKE) download-knative-serving-net-gateway-api
+	$(MAKE) download-contour-gateway
+
 download-knative-serving:
 	# https://knative.dev/docs/install/yaml-install/serving/install-serving-with-yaml
 	# Knative Serving
