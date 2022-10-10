@@ -16,8 +16,7 @@ kind: Namespace
 metadata:
   name: knative-serving
   labels:
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
   namespace: '{{ .Release.Namespace }}'
 
 # Copyright 2019 The Knative Authors
@@ -42,21 +41,20 @@ metadata:
   # (which should be identical, but isn't guaranteed to be installed alongside serving).
   name: knative-serving-aggregated-addressable-resolver
   labels:
-    app.kubernetes.io/version: "1.4.0"
-    app.kubernetes.io/name: knative-serving
+    serving.knative.dev/release: "v0.24.2"
   namespace: '{{ .Release.Namespace }}'
 aggregationRule:
   clusterRoleSelectors:
     - matchLabels:
         duck.knative.dev/addressable: "true"
+rules: [] # Rules are automatically filled in by the controller manager.
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-serving-addressable-resolver
   labels:
-    app.kubernetes.io/version: "1.4.0"
-    app.kubernetes.io/name: knative-serving
+    serving.knative.dev/release: "v0.24.2"
     # Labeled to facilitate aggregated cluster roles that act on Addressables.
     duck.knative.dev/addressable: "true"
   namespace: '{{ .Release.Namespace }}'
@@ -94,8 +92,7 @@ metadata:
   name: knative-serving-namespaced-admin
   labels:
     rbac.authorization.k8s.io/aggregate-to-admin: "true"
-    app.kubernetes.io/version: "1.4.0"
-    app.kubernetes.io/name: knative-serving
+    serving.knative.dev/release: "v0.24.2"
   namespace: '{{ .Release.Namespace }}'
 rules:
   - apiGroups: ["serving.knative.dev"]
@@ -111,8 +108,7 @@ metadata:
   name: knative-serving-namespaced-edit
   labels:
     rbac.authorization.k8s.io/aggregate-to-edit: "true"
-    app.kubernetes.io/version: "1.4.0"
-    app.kubernetes.io/name: knative-serving
+    serving.knative.dev/release: "v0.24.2"
   namespace: '{{ .Release.Namespace }}'
 rules:
   - apiGroups: ["serving.knative.dev"]
@@ -128,8 +124,7 @@ metadata:
   name: knative-serving-namespaced-view
   labels:
     rbac.authorization.k8s.io/aggregate-to-view: "true"
-    app.kubernetes.io/version: "1.4.0"
-    app.kubernetes.io/name: knative-serving
+    serving.knative.dev/release: "v0.24.2"
   namespace: '{{ .Release.Namespace }}'
 rules:
   - apiGroups: ["serving.knative.dev", "networking.internal.knative.dev", "autoscaling.internal.knative.dev", "caching.internal.knative.dev"]
@@ -155,9 +150,8 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-serving-core
   labels:
+    serving.knative.dev/release: "v0.24.2"
     serving.knative.dev/controller: "true"
-    app.kubernetes.io/version: "1.4.0"
-    app.kubernetes.io/name: knative-serving
   namespace: '{{ .Release.Namespace }}'
 rules:
   - apiGroups: [""]
@@ -210,8 +204,7 @@ apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-serving-podspecable-binding
   labels:
-    app.kubernetes.io/version: "1.4.0"
-    app.kubernetes.io/name: knative-serving
+    serving.knative.dev/release: "v0.24.2"
     # Labeled to facilitate aggregated cluster roles that act on PodSpecables.
     duck.knative.dev/podspecable: "true"
   namespace: '{{ .Release.Namespace }}'
@@ -247,31 +240,27 @@ metadata:
   name: controller
   namespace: '{{ .Release.Namespace }}'
   labels:
-    app.kubernetes.io/component: controller
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
 ---
 kind: ClusterRole
 apiVersion: rbac.authorization.k8s.io/v1
 metadata:
   name: knative-serving-admin
   labels:
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
   namespace: '{{ .Release.Namespace }}'
 aggregationRule:
   clusterRoleSelectors:
     - matchLabels:
         serving.knative.dev/controller: "true"
+rules: [] # Rules are automatically filled in by the controller manager.
 ---
 apiVersion: rbac.authorization.k8s.io/v1
 kind: ClusterRoleBinding
 metadata:
   name: knative-serving-controller-admin
   labels:
-    app.kubernetes.io/component: controller
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
   namespace: '{{ .Release.Namespace }}'
 subjects:
   - kind: ServiceAccount
@@ -287,9 +276,7 @@ kind: ClusterRoleBinding
 metadata:
   name: knative-serving-controller-addressable-resolver
   labels:
-    app.kubernetes.io/component: controller
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
   namespace: '{{ .Release.Namespace }}'
 subjects:
   - kind: ServiceAccount
@@ -319,8 +306,6 @@ kind: CustomResourceDefinition
 metadata:
   name: images.caching.internal.knative.dev
   labels:
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
     knative.dev/crd-install: "true"
   namespace: '{{ .Release.Namespace }}'
 spec:
@@ -332,6 +317,8 @@ spec:
     categories:
       - knative-internal
       - caching
+    shortNames:
+      - img
   scope: Namespaced
   versions:
     - name: v1alpha1
@@ -371,9 +358,7 @@ kind: CustomResourceDefinition
 metadata:
   name: certificates.networking.internal.knative.dev
   labels:
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/component: networking
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
     knative.dev/crd-install: "true"
   namespace: '{{ .Release.Namespace }}'
 spec:
@@ -430,8 +415,7 @@ kind: CustomResourceDefinition
 metadata:
   name: configurations.serving.knative.dev
   labels:
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
     knative.dev/crd-install: "true"
     duck.knative.dev/podspecable: "true"
   namespace: '{{ .Release.Namespace }}'
@@ -515,9 +499,6 @@ spec:
                       required:
                         - containers
                       properties:
-                        automountServiceAccountToken:
-                          description: AutomountServiceAccountToken indicates whether a service account token should be automatically mounted.
-                          type: boolean
                         containerConcurrency:
                           description: ContainerConcurrency specifies the maximum allowed in-flight (concurrent) requests per container of the Revision.  Defaults to `0` which means concurrency to the application is not limited, and the system decides the target concurrency for the autoscaler.
                           type: integer
@@ -530,12 +511,12 @@ spec:
                             type: object
                             properties:
                               args:
-                                description: 'Arguments to the entrypoint. The docker image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                                description: 'Arguments to the entrypoint. The docker image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                                 type: array
                                 items:
                                   type: string
                               command:
-                                description: 'Entrypoint array. Not executed within a shell. The docker image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                                description: 'Entrypoint array. Not executed within a shell. The docker image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                                 type: array
                                 items:
                                   type: string
@@ -552,7 +533,7 @@ spec:
                                       description: Name of the environment variable. Must be a C_IDENTIFIER.
                                       type: string
                                     value:
-                                      description: 'Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".'
+                                      description: 'Variable references $(VAR_NAME) are expanded using the previous defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".'
                                       type: string
                                     valueFrom:
                                       description: Source for the environment variable's value. Cannot be used if value is not empty.
@@ -630,7 +611,7 @@ spec:
                                 type: object
                                 properties:
                                   exec:
-                                    description: Exec specifies the action to take.
+                                    description: One and only one of the following should be specified. Exec specifies the action to take.
                                     type: object
                                     properties:
                                       command:
@@ -685,7 +666,7 @@ spec:
                                     type: integer
                                     format: int32
                                   tcpSocket:
-                                    description: TCPSocket specifies an action involving a TCP port.
+                                    description: 'TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported TODO: implement a realistic TCP lifecycle hook'
                                     type: object
                                     properties:
                                       host:
@@ -729,7 +710,7 @@ spec:
                                 type: object
                                 properties:
                                   exec:
-                                    description: Exec specifies the action to take.
+                                    description: One and only one of the following should be specified. Exec specifies the action to take.
                                     type: object
                                     properties:
                                       command:
@@ -784,7 +765,7 @@ spec:
                                     type: integer
                                     format: int32
                                   tcpSocket:
-                                    description: TCPSocket specifies an action involving a TCP port.
+                                    description: 'TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported TODO: implement a realistic TCP lifecycle hook'
                                     type: object
                                     properties:
                                       host:
@@ -796,11 +777,11 @@ spec:
                                     type: integer
                                     format: int32
                               resources:
-                                description: 'Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                                description: 'Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                                 type: object
                                 properties:
                                   limits:
-                                    description: 'Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                                    description: 'Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                                     type: object
                                     additionalProperties:
                                       pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
@@ -809,7 +790,7 @@ spec:
                                         - type: string
                                       x-kubernetes-int-or-string: true
                                   requests:
-                                    description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                                    description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                                     type: object
                                     additionalProperties:
                                       pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
@@ -818,11 +799,11 @@ spec:
                                         - type: string
                                       x-kubernetes-int-or-string: true
                               securityContext:
-                                description: 'SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
+                                description: 'Security options the pod should run with. More info: https://kubernetes.io/docs/concepts/policy/security-context/ More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
                                 type: object
                                 properties:
                                   capabilities:
-                                    description: The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+                                    description: The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime.
                                     type: object
                                     properties:
                                       drop:
@@ -833,10 +814,10 @@ spec:
                                           type: string
                                     x-kubernetes-preserve-unknown-fields: true
                                   readOnlyRootFilesystem:
-                                    description: Whether this container has a read-only root filesystem. Default is false. Note that this field cannot be set when spec.os.name is windows.
+                                    description: Whether this container has a read-only root filesystem. Default is false.
                                     type: boolean
                                   runAsUser:
-                                    description: The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+                                    description: The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
                                     type: integer
                                     format: int64
                                 x-kubernetes-preserve-unknown-fields: true
@@ -1063,7 +1044,6 @@ spec:
                                   secretName:
                                     description: 'Name of the secret in the pod''s namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret'
                                     type: string
-                            x-kubernetes-preserve-unknown-fields: true
                       x-kubernetes-preserve-unknown-fields: true
             status:
               description: ConfigurationStatus communicates the observed state of the Configuration (from the controller).
@@ -1133,9 +1113,7 @@ kind: CustomResourceDefinition
 metadata:
   name: clusterdomainclaims.networking.internal.knative.dev
   labels:
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/component: networking
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
     knative.dev/crd-install: "true"
   namespace: '{{ .Release.Namespace }}'
 spec:
@@ -1184,129 +1162,12 @@ kind: CustomResourceDefinition
 metadata:
   name: domainmappings.serving.knative.dev
   labels:
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
     knative.dev/crd-install: "true"
   namespace: '{{ .Release.Namespace }}'
 spec:
   group: serving.knative.dev
   versions:
-    - name: v1beta1
-      served: true
-      storage: false
-      subresources:
-        status: {}
-      additionalPrinterColumns:
-        - name: URL
-          type: string
-          jsonPath: .status.url
-        - name: Ready
-          type: string
-          jsonPath: ".status.conditions[?(@.type=='Ready')].status"
-        - name: Reason
-          type: string
-          jsonPath: ".status.conditions[?(@.type=='Ready')].reason"
-      "schema":
-        "openAPIV3Schema":
-          description: DomainMapping is a mapping from a custom hostname to an Addressable.
-          type: object
-          properties:
-            apiVersion:
-              description: 'APIVersion defines the versioned schema of this representation of an object. Servers should convert recognized schemas to the latest internal value, and may reject unrecognized values. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources'
-              type: string
-            kind:
-              description: 'Kind is a string value representing the REST resource this object represents. Servers may infer this from the endpoint the client submits requests to. Cannot be updated. In CamelCase. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-              type: string
-            metadata:
-              type: object
-            spec:
-              description: 'Spec is the desired state of the DomainMapping. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status'
-              type: object
-              required:
-                - ref
-              properties:
-                ref:
-                  description: "Ref specifies the target of the Domain Mapping. \n The object identified by the Ref must be an Addressable with a URL of the form `{name}.{namespace}.{domain}` where `{domain}` is the cluster domain, and `{name}` and `{namespace}` are the name and namespace of a Kubernetes Service. \n This contract is satisfied by Knative types such as Knative Services and Knative Routes, and by Kubernetes Services."
-                  type: object
-                  required:
-                    - kind
-                    - name
-                  properties:
-                    apiVersion:
-                      description: API version of the referent.
-                      type: string
-                    group:
-                      description: 'Group of the API, without the version of the group. This can be used as an alternative to the APIVersion, and then resolved using ResolveGroup. Note: This API is EXPERIMENTAL and might break anytime. For more details: https://github.com/knative/eventing/issues/5086'
-                      type: string
-                    kind:
-                      description: 'Kind of the referent. More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds'
-                      type: string
-                    name:
-                      description: 'Name of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/names/#names'
-                      type: string
-                    namespace:
-                      description: 'Namespace of the referent. More info: https://kubernetes.io/docs/concepts/overview/working-with-objects/namespaces/ This is optional field, it gets defaulted to the object holding it if left out.'
-                      type: string
-                tls:
-                  description: TLS allows the DomainMapping to terminate TLS traffic with an existing secret.
-                  type: object
-                  required:
-                    - secretName
-                  properties:
-                    secretName:
-                      description: SecretName is the name of the existing secret used to terminate TLS traffic.
-                      type: string
-            status:
-              description: 'Status is the current state of the DomainMapping. More info: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#spec-and-status'
-              type: object
-              properties:
-                address:
-                  description: Address holds the information needed for a DomainMapping to be the target of an event.
-                  type: object
-                  properties:
-                    url:
-                      type: string
-                annotations:
-                  description: Annotations is additional Status fields for the Resource to save some additional State as well as convey more information to the user. This is roughly akin to Annotations on any k8s resource, just the reconciler conveying richer information outwards.
-                  type: object
-                  additionalProperties:
-                    type: string
-                conditions:
-                  description: Conditions the latest available observations of a resource's current state.
-                  type: array
-                  items:
-                    description: 'Condition defines a readiness condition for a Knative resource. See: https://github.com/kubernetes/community/blob/master/contributors/devel/sig-architecture/api-conventions.md#typical-status-properties'
-                    type: object
-                    required:
-                      - status
-                      - type
-                    properties:
-                      lastTransitionTime:
-                        description: LastTransitionTime is the last time the condition transitioned from one status to another. We use VolatileTime in place of metav1.Time to exclude this from creating equality.Semantic differences (all other things held constant).
-                        type: string
-                        format: date-time
-                      message:
-                        description: A human readable message indicating details about the transition.
-                        type: string
-                      reason:
-                        description: The reason for the condition's last transition.
-                        type: string
-                      severity:
-                        description: Severity with which to treat failures of this type of condition. When this is not specified, it defaults to Error.
-                        type: string
-                      status:
-                        description: Status of the condition, one of True, False, Unknown.
-                        type: string
-                      type:
-                        description: Type of condition.
-                        type: string
-                observedGeneration:
-                  description: ObservedGeneration is the 'Generation' of the Service that was last processed by the controller.
-                  type: integer
-                  format: int64
-                url:
-                  description: URL is the URL of this DomainMapping.
-                  type: string
     - name: v1alpha1
       served: true
       storage: true
@@ -1454,9 +1315,7 @@ kind: CustomResourceDefinition
 metadata:
   name: ingresses.networking.internal.knative.dev
   labels:
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/component: networking
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
     knative.dev/crd-install: "true"
   namespace: '{{ .Release.Namespace }}'
 spec:
@@ -1514,8 +1373,7 @@ kind: CustomResourceDefinition
 metadata:
   name: metrics.autoscaling.internal.knative.dev
   labels:
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
     knative.dev/crd-install: "true"
   namespace: '{{ .Release.Namespace }}'
 spec:
@@ -1636,8 +1494,7 @@ kind: CustomResourceDefinition
 metadata:
   name: podautoscalers.autoscaling.internal.knative.dev
   labels:
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
     knative.dev/crd-install: "true"
   namespace: '{{ .Release.Namespace }}'
 spec:
@@ -1795,8 +1652,7 @@ kind: CustomResourceDefinition
 metadata:
   name: revisions.serving.knative.dev
   labels:
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
     knative.dev/crd-install: "true"
   namespace: '{{ .Release.Namespace }}'
 spec:
@@ -1859,9 +1715,6 @@ spec:
               required:
                 - containers
               properties:
-                automountServiceAccountToken:
-                  description: AutomountServiceAccountToken indicates whether a service account token should be automatically mounted.
-                  type: boolean
                 containerConcurrency:
                   description: ContainerConcurrency specifies the maximum allowed in-flight (concurrent) requests per container of the Revision.  Defaults to `0` which means concurrency to the application is not limited, and the system decides the target concurrency for the autoscaler.
                   type: integer
@@ -1874,12 +1727,12 @@ spec:
                     type: object
                     properties:
                       args:
-                        description: 'Arguments to the entrypoint. The docker image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                        description: 'Arguments to the entrypoint. The docker image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                         type: array
                         items:
                           type: string
                       command:
-                        description: 'Entrypoint array. Not executed within a shell. The docker image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                        description: 'Entrypoint array. Not executed within a shell. The docker image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                         type: array
                         items:
                           type: string
@@ -1896,7 +1749,7 @@ spec:
                               description: Name of the environment variable. Must be a C_IDENTIFIER.
                               type: string
                             value:
-                              description: 'Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".'
+                              description: 'Variable references $(VAR_NAME) are expanded using the previous defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".'
                               type: string
                             valueFrom:
                               description: Source for the environment variable's value. Cannot be used if value is not empty.
@@ -1974,7 +1827,7 @@ spec:
                         type: object
                         properties:
                           exec:
-                            description: Exec specifies the action to take.
+                            description: One and only one of the following should be specified. Exec specifies the action to take.
                             type: object
                             properties:
                               command:
@@ -2029,7 +1882,7 @@ spec:
                             type: integer
                             format: int32
                           tcpSocket:
-                            description: TCPSocket specifies an action involving a TCP port.
+                            description: 'TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported TODO: implement a realistic TCP lifecycle hook'
                             type: object
                             properties:
                               host:
@@ -2073,7 +1926,7 @@ spec:
                         type: object
                         properties:
                           exec:
-                            description: Exec specifies the action to take.
+                            description: One and only one of the following should be specified. Exec specifies the action to take.
                             type: object
                             properties:
                               command:
@@ -2128,7 +1981,7 @@ spec:
                             type: integer
                             format: int32
                           tcpSocket:
-                            description: TCPSocket specifies an action involving a TCP port.
+                            description: 'TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported TODO: implement a realistic TCP lifecycle hook'
                             type: object
                             properties:
                               host:
@@ -2140,11 +1993,11 @@ spec:
                             type: integer
                             format: int32
                       resources:
-                        description: 'Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                        description: 'Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                         type: object
                         properties:
                           limits:
-                            description: 'Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                            description: 'Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                             type: object
                             additionalProperties:
                               pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
@@ -2153,7 +2006,7 @@ spec:
                                 - type: string
                               x-kubernetes-int-or-string: true
                           requests:
-                            description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                            description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                             type: object
                             additionalProperties:
                               pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
@@ -2162,11 +2015,11 @@ spec:
                                 - type: string
                               x-kubernetes-int-or-string: true
                       securityContext:
-                        description: 'SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
+                        description: 'Security options the pod should run with. More info: https://kubernetes.io/docs/concepts/policy/security-context/ More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
                         type: object
                         properties:
                           capabilities:
-                            description: The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+                            description: The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime.
                             type: object
                             properties:
                               drop:
@@ -2177,10 +2030,10 @@ spec:
                                   type: string
                             x-kubernetes-preserve-unknown-fields: true
                           readOnlyRootFilesystem:
-                            description: Whether this container has a read-only root filesystem. Default is false. Note that this field cannot be set when spec.os.name is windows.
+                            description: Whether this container has a read-only root filesystem. Default is false.
                             type: boolean
                           runAsUser:
-                            description: The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+                            description: The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
                             type: integer
                             format: int64
                         x-kubernetes-preserve-unknown-fields: true
@@ -2407,7 +2260,6 @@ spec:
                           secretName:
                             description: 'Name of the secret in the pod''s namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret'
                             type: string
-                    x-kubernetes-preserve-unknown-fields: true
               x-kubernetes-preserve-unknown-fields: true
             status:
               description: RevisionStatus communicates the observed state of the Revision (from the controller).
@@ -2466,17 +2318,9 @@ spec:
                   description: DesiredReplicas reflects the desired amount of pods running this revision.
                   type: integer
                   format: int32
-                initContainerStatuses:
-                  description: 'InitContainerStatuses is a slice of images present in .Spec.InitContainer[*].Image to their respective digests and their container name. The digests are resolved during the creation of Revision. ContainerStatuses holds the container name and image digests for both serving and non serving containers. ref: http://bit.ly/image-digests'
-                  type: array
-                  items:
-                    description: ContainerStatus holds the information of container name and image digest value
-                    type: object
-                    properties:
-                      imageDigest:
-                        type: string
-                      name:
-                        type: string
+                imageDigest:
+                  description: 'DeprecatedImageDigest holds the resolved digest for the image specified within .Spec.Container.Image. The digest is resolved during the creation of Revision. This field holds the digest value regardless of whether a tag or digest was originally specified in the Container object. It may be empty if the image comes from a registry listed to skip resolution. If multiple containers specified then DeprecatedImageDigest holds the digest for serving container. DEPRECATED: Use ContainerStatuses instead. TODO(savitaashture) Remove deprecatedImageDigest. ref https://kubernetes.io/docs/reference/using-api/deprecation-policy for deprecation.'
+                  type: string
                 logUrl:
                   description: LogURL specifies the generated logging url for this particular revision based on the revision url template specified in the controller's config.
                   type: string
@@ -2484,6 +2328,9 @@ spec:
                   description: ObservedGeneration is the 'Generation' of the Service that was last processed by the controller.
                   type: integer
                   format: int64
+                serviceName:
+                  description: 'ServiceName holds the name of a core Kubernetes Service resource that load balances over the pods backing this Revision. Deprecated: revision service name is effectively equal to the revision name, as per #10540. 0.23 — stop populating 0.25 — remove.'
+                  type: string
 
 # Copyright 2019 The Knative Authors
 #
@@ -2505,8 +2352,7 @@ kind: CustomResourceDefinition
 metadata:
   name: routes.serving.knative.dev
   labels:
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
     knative.dev/crd-install: "true"
     duck.knative.dev/addressable: "true"
   namespace: '{{ .Release.Namespace }}'
@@ -2679,9 +2525,7 @@ kind: CustomResourceDefinition
 metadata:
   name: serverlessservices.networking.internal.knative.dev
   labels:
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/component: networking
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
     knative.dev/crd-install: "true"
   namespace: '{{ .Release.Namespace }}'
 spec:
@@ -2750,8 +2594,7 @@ kind: CustomResourceDefinition
 metadata:
   name: services.serving.knative.dev
   labels:
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
     knative.dev/crd-install: "true"
     duck.knative.dev/addressable: "true"
     duck.knative.dev/podspecable: "true"
@@ -2839,9 +2682,6 @@ spec:
                       required:
                         - containers
                       properties:
-                        automountServiceAccountToken:
-                          description: AutomountServiceAccountToken indicates whether a service account token should be automatically mounted.
-                          type: boolean
                         containerConcurrency:
                           description: ContainerConcurrency specifies the maximum allowed in-flight (concurrent) requests per container of the Revision.  Defaults to `0` which means concurrency to the application is not limited, and the system decides the target concurrency for the autoscaler.
                           type: integer
@@ -2854,12 +2694,12 @@ spec:
                             type: object
                             properties:
                               args:
-                                description: 'Arguments to the entrypoint. The docker image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                                description: 'Arguments to the entrypoint. The docker image''s CMD is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                                 type: array
                                 items:
                                   type: string
                               command:
-                                description: 'Entrypoint array. Not executed within a shell. The docker image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
+                                description: 'Entrypoint array. Not executed within a shell. The docker image''s ENTRYPOINT is used if this is not provided. Variable references $(VAR_NAME) are expanded using the container''s environment. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Cannot be updated. More info: https://kubernetes.io/docs/tasks/inject-data-application/define-command-argument-container/#running-a-command-in-a-shell'
                                 type: array
                                 items:
                                   type: string
@@ -2876,7 +2716,7 @@ spec:
                                       description: Name of the environment variable. Must be a C_IDENTIFIER.
                                       type: string
                                     value:
-                                      description: 'Variable references $(VAR_NAME) are expanded using the previously defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. Double $$ are reduced to a single $, which allows for escaping the $(VAR_NAME) syntax: i.e. "$$(VAR_NAME)" will produce the string literal "$(VAR_NAME)". Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".'
+                                      description: 'Variable references $(VAR_NAME) are expanded using the previous defined environment variables in the container and any service environment variables. If a variable cannot be resolved, the reference in the input string will be unchanged. The $(VAR_NAME) syntax can be escaped with a double $$, ie: $$(VAR_NAME). Escaped references will never be expanded, regardless of whether the variable exists or not. Defaults to "".'
                                       type: string
                                     valueFrom:
                                       description: Source for the environment variable's value. Cannot be used if value is not empty.
@@ -2954,7 +2794,7 @@ spec:
                                 type: object
                                 properties:
                                   exec:
-                                    description: Exec specifies the action to take.
+                                    description: One and only one of the following should be specified. Exec specifies the action to take.
                                     type: object
                                     properties:
                                       command:
@@ -3009,7 +2849,7 @@ spec:
                                     type: integer
                                     format: int32
                                   tcpSocket:
-                                    description: TCPSocket specifies an action involving a TCP port.
+                                    description: 'TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported TODO: implement a realistic TCP lifecycle hook'
                                     type: object
                                     properties:
                                       host:
@@ -3053,7 +2893,7 @@ spec:
                                 type: object
                                 properties:
                                   exec:
-                                    description: Exec specifies the action to take.
+                                    description: One and only one of the following should be specified. Exec specifies the action to take.
                                     type: object
                                     properties:
                                       command:
@@ -3108,7 +2948,7 @@ spec:
                                     type: integer
                                     format: int32
                                   tcpSocket:
-                                    description: TCPSocket specifies an action involving a TCP port.
+                                    description: 'TCPSocket specifies an action involving a TCP port. TCP hooks not yet supported TODO: implement a realistic TCP lifecycle hook'
                                     type: object
                                     properties:
                                       host:
@@ -3120,11 +2960,11 @@ spec:
                                     type: integer
                                     format: int32
                               resources:
-                                description: 'Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                                description: 'Compute Resources required by this container. Cannot be updated. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                                 type: object
                                 properties:
                                   limits:
-                                    description: 'Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                                    description: 'Limits describes the maximum amount of compute resources allowed. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                                     type: object
                                     additionalProperties:
                                       pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
@@ -3133,7 +2973,7 @@ spec:
                                         - type: string
                                       x-kubernetes-int-or-string: true
                                   requests:
-                                    description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-resources-containers/'
+                                    description: 'Requests describes the minimum amount of compute resources required. If Requests is omitted for a container, it defaults to Limits if that is explicitly specified, otherwise to an implementation-defined value. More info: https://kubernetes.io/docs/concepts/configuration/manage-compute-resources-container/'
                                     type: object
                                     additionalProperties:
                                       pattern: ^(\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))(([KMGTPE]i)|[numkMGTPE]|([eE](\+|-)?(([0-9]+(\.[0-9]*)?)|(\.[0-9]+))))?$
@@ -3142,11 +2982,11 @@ spec:
                                         - type: string
                                       x-kubernetes-int-or-string: true
                               securityContext:
-                                description: 'SecurityContext defines the security options the container should be run with. If set, the fields of SecurityContext override the equivalent fields of PodSecurityContext. More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
+                                description: 'Security options the pod should run with. More info: https://kubernetes.io/docs/concepts/policy/security-context/ More info: https://kubernetes.io/docs/tasks/configure-pod-container/security-context/'
                                 type: object
                                 properties:
                                   capabilities:
-                                    description: The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime. Note that this field cannot be set when spec.os.name is windows.
+                                    description: The capabilities to add/drop when running containers. Defaults to the default set of capabilities granted by the container runtime.
                                     type: object
                                     properties:
                                       drop:
@@ -3157,10 +2997,10 @@ spec:
                                           type: string
                                     x-kubernetes-preserve-unknown-fields: true
                                   readOnlyRootFilesystem:
-                                    description: Whether this container has a read-only root filesystem. Default is false. Note that this field cannot be set when spec.os.name is windows.
+                                    description: Whether this container has a read-only root filesystem. Default is false.
                                     type: boolean
                                   runAsUser:
-                                    description: The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence. Note that this field cannot be set when spec.os.name is windows.
+                                    description: The UID to run the entrypoint of the container process. Defaults to user specified in image metadata if unspecified. May also be set in PodSecurityContext.  If set in both SecurityContext and PodSecurityContext, the value specified in SecurityContext takes precedence.
                                     type: integer
                                     format: int64
                                 x-kubernetes-preserve-unknown-fields: true
@@ -3387,7 +3227,6 @@ spec:
                                   secretName:
                                     description: 'Name of the secret in the pod''s namespace to use. More info: https://kubernetes.io/docs/concepts/storage/volumes#secret'
                                     type: string
-                            x-kubernetes-preserve-unknown-fields: true
                       x-kubernetes-preserve-unknown-fields: true
                 traffic:
                   description: Traffic specifies how to distribute traffic over a collection of revisions and configurations.
@@ -3519,13 +3358,11 @@ metadata:
   name: queue-proxy
   namespace: '{{ .Release.Namespace }}'
   labels:
-    app.kubernetes.io/component: queue-proxy
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
 spec:
   # This is the Go import path for the binary that is containerized
   # and substituted here.
-  image: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:a40f6e84de1a0d145d27084a94cc7fa221159e75cafde7d332ac8f4f0aed58fb
+  image: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:07e7bb5aa76ef8d7d88a2e54d4cf41d71ba91eb75c1f6039d4a2baa9c49be35e
 
 # Copyright 2018 The Knative Authors
 #
@@ -3547,9 +3384,7 @@ metadata:
   name: activator
   namespace: '{{ .Release.Namespace }}'
   labels:
-    app.kubernetes.io/component: activator
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
 spec:
   minReplicas: 1
   maxReplicas: 20
@@ -3569,15 +3404,13 @@ spec:
 # Activator PDB. Currently we permit unavailability of 20% of tasks at the same time.
 # Given the subsetting and that the activators are partially stateful systems, we want
 # a slow rollout of the new versions and slow migration during node upgrades.
-apiVersion: policy/v1
+apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: activator-pdb
   namespace: '{{ .Release.Namespace }}'
   labels:
-    app.kubernetes.io/component: activator
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
 spec:
   minAvailable: 80%
   selector:
@@ -3604,9 +3437,7 @@ metadata:
   name: activator
   namespace: '{{ .Release.Namespace }}'
   labels:
-    app.kubernetes.io/component: activator
-    app.kubernetes.io/version: "1.4.0"
-    app.kubernetes.io/name: knative-serving
+    serving.knative.dev/release: "v0.24.2"
 spec:
   selector:
     matchLabels:
@@ -3619,16 +3450,14 @@ spec:
       labels:
         app: activator
         role: activator
-        app.kubernetes.io/component: activator
-        app.kubernetes.io/name: knative-serving
-        app.kubernetes.io/version: "1.4.0"
+        serving.knative.dev/release: "v0.24.2"
     spec:
       serviceAccountName: controller
       containers:
         - name: activator
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:7d664e052ec0e78961dbb7b5acb62c70ba106ba1fdd46f2177ab56e1d0d360fb
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/activator@sha256:68d9e0b8a4d47f43df7c9b240932de864a79058e091a84695772dc791919262a
           # The numbers are based on performance test results from
           # https://github.com/knative/serving/issues/1625#issuecomment-511930023
           resources:
@@ -3683,15 +3512,13 @@ spec:
               httpHeaders:
                 - name: k-kubelet-probe
                   value: "activator"
-            periodSeconds: 5
-            failureThreshold: 5
+            failureThreshold: 12
           livenessProbe:
             httpGet:
               port: 8012
               httpHeaders:
                 - name: k-kubelet-probe
                   value: "activator"
-            periodSeconds: 10
             failureThreshold: 12
             initialDelaySeconds: 15
       # The activator (often) sits on the dataplane, and may proxy long (e.g.
@@ -3710,9 +3537,7 @@ metadata:
   namespace: '{{ .Release.Namespace }}'
   labels:
     app: activator
-    app.kubernetes.io/component: activator
-    app.kubernetes.io/version: "1.4.0"
-    app.kubernetes.io/name: knative-serving
+    serving.knative.dev/release: "v0.24.2"
 spec:
   selector:
     app: activator
@@ -3730,9 +3555,6 @@ spec:
     - name: http2
       port: 81
       targetPort: 8013
-    - name: https
-      port: 443
-      targetPort: 8112
   type: ClusterIP
 
 # Copyright 2018 The Knative Authors
@@ -3755,27 +3577,19 @@ metadata:
   name: autoscaler
   namespace: '{{ .Release.Namespace }}'
   labels:
-    app.kubernetes.io/component: autoscaler
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
 spec:
   replicas: 1
   selector:
     matchLabels:
       app: autoscaler
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxUnavailable: 0
   template:
     metadata:
       annotations:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "false"
       labels:
         app: autoscaler
-        app.kubernetes.io/component: autoscaler
-        app.kubernetes.io/name: knative-serving
-        app.kubernetes.io/version: "1.4.0"
+        serving.knative.dev/release: "v0.24.2"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -3792,7 +3606,7 @@ spec:
         - name: autoscaler
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:02f187b21cc00bc91c45db85571299f338fcbd58aa5c9193f0833782a7710dea
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/autoscaler@sha256:d25cebd004becbf3a2f92706b26eb069918972ca5f0e2e1f1afaad281bcca9bc
           resources:
             requests:
               cpu: 100m
@@ -3853,9 +3667,7 @@ kind: Service
 metadata:
   labels:
     app: autoscaler
-    app.kubernetes.io/component: autoscaler
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
   name: autoscaler
   namespace: '{{ .Release.Namespace }}'
 spec:
@@ -3893,9 +3705,7 @@ metadata:
   name: controller
   namespace: '{{ .Release.Namespace }}'
   labels:
-    app.kubernetes.io/component: controller
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
 spec:
   selector:
     matchLabels:
@@ -3906,9 +3716,7 @@ spec:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         app: controller
-        app.kubernetes.io/component: controller
-        app.kubernetes.io/name: knative-serving
-        app.kubernetes.io/version: "1.4.0"
+        serving.knative.dev/release: "v0.24.2"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -3925,7 +3733,7 @@ spec:
         - name: controller
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/controller@sha256:8d84706d53adcf89c49687b4fade06261769b9f99257cb64d1758398f085b062
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/controller@sha256:ed2c1b5d123a79c4d050ec62e72891fa4b062e8992772deb7371cc77fa72a220
           resources:
             requests:
               cpu: 100m
@@ -3967,9 +3775,7 @@ kind: Service
 metadata:
   labels:
     app: controller
-    app.kubernetes.io/component: controller
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
   name: controller
   namespace: '{{ .Release.Namespace }}'
 spec:
@@ -4004,9 +3810,7 @@ metadata:
   name: domain-mapping
   namespace: '{{ .Release.Namespace }}'
   labels:
-    app.kubernetes.io/component: domain-mapping
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
 spec:
   selector:
     matchLabels:
@@ -4017,9 +3821,7 @@ spec:
         cluster-autoscaler.kubernetes.io/safe-to-evict: "true"
       labels:
         app: domain-mapping
-        app.kubernetes.io/component: domain-mapping
-        app.kubernetes.io/name: knative-serving
-        app.kubernetes.io/version: "1.4.0"
+        serving.knative.dev/release: "v0.24.2"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -4036,7 +3838,7 @@ spec:
         - name: domain-mapping
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping@sha256:43d9ef8ef868aa8fd72a1f1f69ba07da99cfa0a73014636ff7ece9bc614b1f8f
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping@sha256:a51ade455f45c35395a108bea3450e5cfeed0e7cc9845e5d8d6afc439133e235
           resources:
             requests:
               cpu: 30m
@@ -4089,9 +3891,7 @@ metadata:
   name: domainmapping-webhook
   namespace: '{{ .Release.Namespace }}'
   labels:
-    app.kubernetes.io/component: domain-mapping
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
 spec:
   selector:
     matchLabels:
@@ -4104,9 +3904,7 @@ spec:
       labels:
         app: domainmapping-webhook
         role: domainmapping-webhook
-        app.kubernetes.io/component: domain-mapping
-        app.kubernetes.io/name: knative-serving
-        app.kubernetes.io/version: "1.4.0"
+        serving.knative.dev/release: "v0.24.2"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -4123,7 +3921,7 @@ spec:
         - name: domainmapping-webhook
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping-webhook@sha256:b0039cd8d749608e4ab04544d36026556be04fe6ac39041223372b1c9031d8d6
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/domain-mapping-webhook@sha256:84babc992b909819ebbcc814c92244f1973d811242cb6307d064c8453b43a001
           resources:
             requests:
               cpu: 100m
@@ -4190,9 +3988,7 @@ kind: Service
 metadata:
   labels:
     role: domainmapping-webhook
-    app.kubernetes.io/component: domain-mapping
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
   name: domainmapping-webhook
   namespace: '{{ .Release.Namespace }}'
 spec:
@@ -4230,9 +4026,7 @@ metadata:
   name: webhook
   namespace: '{{ .Release.Namespace }}'
   labels:
-    app.kubernetes.io/component: webhook
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
 spec:
   minReplicas: 1
   maxReplicas: 5
@@ -4250,15 +4044,13 @@ spec:
           averageUtilization: 100
 ---
 # Webhook PDB.
-apiVersion: policy/v1
+apiVersion: policy/v1beta1
 kind: PodDisruptionBudget
 metadata:
   name: webhook-pdb
   namespace: '{{ .Release.Namespace }}'
   labels:
-    app.kubernetes.io/component: webhook
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
 spec:
   minAvailable: 80%
   selector:
@@ -4285,9 +4077,7 @@ metadata:
   name: webhook
   namespace: '{{ .Release.Namespace }}'
   labels:
-    app.kubernetes.io/component: webhook
-    app.kubernetes.io/version: "1.4.0"
-    app.kubernetes.io/name: knative-serving
+    serving.knative.dev/release: "v0.24.2"
 spec:
   selector:
     matchLabels:
@@ -4300,8 +4090,7 @@ spec:
       labels:
         app: webhook
         role: webhook
-        app.kubernetes.io/version: "1.4.0"
-        app.kubernetes.io/name: knative-serving
+        serving.knative.dev/release: "v0.24.2"
     spec:
       # To avoid node becoming SPOF, spread our replicas to different nodes.
       affinity:
@@ -4318,7 +4107,7 @@ spec:
         - name: webhook
           # This is the Go import path for the binary that is containerized
           # and substituted here.
-          image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:bf58bf8d3790440aa7fb700b45e52ae9678e1ea6dc1135b10ff4b9b1087ee016
+          image: gcr.io/knative-releases/knative.dev/serving/cmd/webhook@sha256:3fe35c192f0a34e6b5322394bed708b64eae3cd25bbd105b063a930547e316f3
           resources:
             requests:
               cpu: 100m
@@ -4387,9 +4176,7 @@ kind: Service
 metadata:
   labels:
     role: webhook
-    app.kubernetes.io/component: webhook
-    app.kubernetes.io/version: "1.4.0"
-    app.kubernetes.io/name: knative-serving
+    serving.knative.dev/release: "v0.24.2"
   name: webhook
   namespace: '{{ .Release.Namespace }}'
 spec:
@@ -4426,9 +4213,7 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: config.webhook.serving.knative.dev
   labels:
-    app.kubernetes.io/component: webhook
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
   namespace: '{{ .Release.Namespace }}'
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
@@ -4439,14 +4224,10 @@ webhooks:
     failurePolicy: Fail
     sideEffects: None
     name: config.webhook.serving.knative.dev
-    objectSelector:
+    namespaceSelector:
       matchExpressions:
-        - key: app.kubernetes.io/name
-          operator: In
-          values: ["knative-serving"]
-        - key: app.kubernetes.io/component
-          operator: In
-          values: ["autoscaler", "controller", "logging", "networking", "observability", "tracing"]
+        - key: serving.knative.dev/release
+          operator: Exists
     timeoutSeconds: 10
 
 # Copyright 2020 The Knative Authors
@@ -4468,9 +4249,7 @@ kind: MutatingWebhookConfiguration
 metadata:
   name: webhook.serving.knative.dev
   labels:
-    app.kubernetes.io/component: webhook
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
   namespace: '{{ .Release.Namespace }}'
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
@@ -4523,9 +4302,7 @@ kind: MutatingWebhookConfiguration
 metadata:
   name: webhook.domainmapping.serving.knative.dev
   labels:
-    app.kubernetes.io/component: domain-mapping
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
   namespace: '{{ .Release.Namespace }}'
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
@@ -4542,7 +4319,6 @@ webhooks:
           - serving.knative.dev
         apiVersions:
           - v1alpha1
-          - v1beta1
         operations:
           - CREATE
           - UPDATE
@@ -4569,9 +4345,7 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: validation.webhook.domainmapping.serving.knative.dev
   labels:
-    app.kubernetes.io/component: domain-mapping
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
   namespace: '{{ .Release.Namespace }}'
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]
@@ -4588,7 +4362,6 @@ webhooks:
           - serving.knative.dev
         apiVersions:
           - v1alpha1
-          - v1beta1
         operations:
           - CREATE
           - UPDATE
@@ -4616,9 +4389,7 @@ kind: ValidatingWebhookConfiguration
 metadata:
   name: validation.webhook.serving.knative.dev
   labels:
-    app.kubernetes.io/component: webhook
-    app.kubernetes.io/name: knative-serving
-    app.kubernetes.io/version: "1.4.0"
+    serving.knative.dev/release: "v0.24.2"
   namespace: '{{ .Release.Namespace }}'
 webhooks:
   - admissionReviewVersions: ["v1", "v1beta1"]

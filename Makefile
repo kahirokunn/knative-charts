@@ -1,4 +1,4 @@
-VERSION = "v1.4.0"
+VERSION = "v0.24.2"
 
 setup-mac:
 	brew install sponge
@@ -12,7 +12,7 @@ download-knative-serving:
 	# https://knative.dev/docs/install/yaml-install/serving/install-serving-with-yaml
 	# Knative Serving
 	-rm -rf ./knative-serving/templates/download/*
-	wget -P ./knative-serving/templates/download https://github.com/knative/serving/releases/download/knative-${VERSION}/serving-core.yaml
+	wget -P ./knative-serving/templates/download https://github.com/knative/serving/releases/download/${VERSION}/serving-core.yaml
 
 	# remove all config
 	cat knative-serving/templates/download/serving-core.yaml | yq eval '. | select(.metadata.name | test("config-.*") | not)' | sponge knative-serving/templates/download/serving-core.yaml
