@@ -1,4 +1,4 @@
-VERSION = "v1.4.0"
+VERSION = "v1.7.2"
 
 setup-mac:
 	brew install sponge
