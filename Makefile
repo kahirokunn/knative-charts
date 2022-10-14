@@ -85,7 +85,18 @@ download-knative-serving-net-gateway-api:
 	cat knative-serving-net-gateway-api/templates/download/controller.yaml | yq '.spec.template.spec.containers[0].image = "gcr.io/knative-releases/knative.dev/net-gateway-api/cmd/controller:latest"' | sponge knative-serving-net-gateway-api/templates/download/controller.yaml
 
 download-contour-gateway:
-	# https://projectcontour.io/guides/gateway-api
-	# Option #2: Dynamically provisioned
+	# https://github.com/knative-sandbox/net-gateway-api#contour
 	-rm -rf ./contour-gateway/templates/download/*
 	wget -P ./contour-gateway/templates/download https://raw.githubusercontent.com/projectcontour/contour-operator/${CONTOUR_OPERATOR_VERSION}/examples/operator/operator.yaml
+
+	git clone https://github.com/knative-sandbox/net-gateway-api.git net-gateway-api-tmp
+	ko resolve -f net-gateway-api-tmp/third_party/contour/gateway/ | sed 's/LoadBalancerService/NodePortService/g' > contour-gateway/templates/download/gateway.yaml
+	rm -rf net-gateway-api-tmp
+
+	# net-gateway-api
+	wget -P ./contour-gateway/templates/download https://raw.githubusercontent.com/knative-sandbox/net-gateway-api/main/config/100-gateway-api.yaml
+	wget -P ./contour-gateway/templates/download https://raw.githubusercontent.com/knative-sandbox/net-gateway-api/main/config/200-clusterrole.yaml
+	wget -P ./contour-gateway/templates/download https://raw.githubusercontent.com/knative-sandbox/net-gateway-api/main/config/controller.yaml
+
+	# resolve image
+	cat contour-gateway/templates/download/controller.yaml | yq '.spec.template.spec.containers[0].image = "gcr.io/knative-releases/knative.dev/net-gateway-api/cmd/controller:latest"' | sponge contour-gateway/templates/download/controller.yaml

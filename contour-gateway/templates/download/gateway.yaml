@@ -1,0 +1,154 @@
+# Copyright 2021 The Knative Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: config-gateway
+  namespace: knative-serving
+  labels:
+    serving.knative.dev/release: devel
+data:
+  visibility: |
+    ExternalIP:
+      class: contour
+      gateway: contour-external/knative-gateway
+      service: contour-external/envoy
+    ClusterLocal:
+      class: contour
+      gateway: contour-internal/knative-local-gateway
+      service: contour-internal/envoy
+
+---
+# Copyright 2021 The Knative Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    control-plane: contour-operator
+  name: contour-external
+---
+apiVersion: operator.projectcontour.io/v1alpha1
+kind: Contour
+metadata:
+  name: contour-external
+  namespace: contour-external
+spec:
+  gatewayControllerName: projectcontour.io/contour-external/contour
+  namespace:
+    name: contour-external
+  ingressClassName: contour-external
+  networkPublishing:
+    envoy:
+      type: NodePortService
+---
+kind: GatewayClass
+apiVersion: gateway.networking.k8s.io/v1alpha2
+metadata:
+  name: contour-external-gatewayclass
+spec:
+  controllerName: projectcontour.io/contour-external/contour
+---
+kind: Gateway
+apiVersion: gateway.networking.k8s.io/v1alpha2
+metadata:
+  name: knative-gateway
+  namespace: contour-external
+spec:
+  gatewayClassName: contour-external-gatewayclass
+  listeners:
+    - name: default
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All
+
+---
+# Copyright 2021 The Knative Authors
+#
+# Licensed under the Apache License, Version 2.0 (the "License");
+# you may not use this file except in compliance with the License.
+# You may obtain a copy of the License at
+#
+#     https://www.apache.org/licenses/LICENSE-2.0
+#
+# Unless required by applicable law or agreed to in writing, software
+# distributed under the License is distributed on an "AS IS" BASIS,
+# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+# See the License for the specific language governing permissions and
+# limitations under the License.
+
+apiVersion: v1
+kind: Namespace
+metadata:
+  labels:
+    control-plane: contour-operator
+  name: contour-internal
+---
+apiVersion: operator.projectcontour.io/v1alpha1
+kind: Contour
+metadata:
+  name: contour-internal
+  namespace: contour-internal
+spec:
+  gatewayControllerName: projectcontour.io/contour-internal/contour
+  namespace:
+    name: contour-internal
+  ingressClassName: contour-internal
+  networkPublishing:
+    envoy:
+      containerPorts:
+        - name: http
+          portNumber: 8081
+        - name: https
+          portNumber: 8443
+      type: ClusterIPService
+---
+kind: GatewayClass
+apiVersion: gateway.networking.k8s.io/v1alpha2
+metadata:
+  name: contour-internal-gatewayclass
+spec:
+  controllerName: projectcontour.io/contour-internal/contour
+---
+kind: Gateway
+apiVersion: gateway.networking.k8s.io/v1alpha2
+metadata:
+  name: knative-local-gateway
+  namespace: contour-internal
+spec:
+  gatewayClassName: contour-internal-gatewayclass
+  listeners:
+    - name: default
+      port: 80
+      protocol: HTTP
+      allowedRoutes:
+        namespaces:
+          from: All
+
+---
