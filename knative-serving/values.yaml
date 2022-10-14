@@ -2,8 +2,9 @@
 allowEmptyConfigMap: true
 configAutoscaler: {}
 configDefaults: {}
-configDeployment:
-  queueSidecarImage: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:f0e506209c784eb65fe79c1d5b6c329c33c9df2b2f8bce44fb4566d12457c54d
+configDeployment: {}
+# configDeployment:
+#   queueSidecarImage: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:9b8dad0630029dfcab124e6b4fa7c8e39b453249f0b31282c48e008bfc16faa3
 configFeatures: {}
 configGc: {}
 configLeaderElection: {}
