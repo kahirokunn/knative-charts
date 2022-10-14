@@ -1,4 +1,5 @@
-VERSION = "v1.7.2"
+KNATIVE_SERVING_VERSION = "v1.7.2"
+CONTOUR_OPERATOR_VERSION = "v1.22.1"
 
 setup-mac:
 	brew install sponge
@@ -12,7 +13,7 @@ download-knative-serving:
 	# https://knative.dev/docs/install/yaml-install/serving/install-serving-with-yaml
 	# Knative Serving
 	-rm -rf ./knative-serving/templates/download/*
-	wget -P ./knative-serving/templates/download https://github.com/knative/serving/releases/download/knative-${VERSION}/serving-core.yaml
+	wget -P ./knative-serving/templates/download https://github.com/knative/serving/releases/download/knative-${KNATIVE_SERVING_VERSION}/serving-core.yaml
 
 	$(MAKE) update-knative-serving-values
 
@@ -87,4 +88,4 @@ download-contour-gateway:
 	# https://projectcontour.io/guides/gateway-api
 	# Option #2: Dynamically provisioned
 	-rm -rf ./contour-gateway/templates/download/*
-	wget -P ./contour-gateway/templates/download https://projectcontour.io/quickstart/contour-gateway-provisioner.yaml
+	wget -P ./contour-gateway/templates/download https://raw.githubusercontent.com/projectcontour/contour-operator/${CONTOUR_OPERATOR_VERSION}/examples/operator/operator.yaml
