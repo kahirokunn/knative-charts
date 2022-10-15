@@ -1,0 +1,21 @@
+apiVersion: operator.knative.dev/v1beta1
+kind: KnativeServing
+metadata:
+  name: knative-serving
+  namespace: knative-serving
+spec:
+  high-availability:
+    replicas: {{ .Values.replicas }}
+  ingress:
+    kourier:
+      enabled: true
+  config:
+    network:
+      ingress-class: "kourier.ingress.networking.knative.dev"
+    domain:
+      {{ .Values.customDomainSuffix }}: ""
+    features:
+      kubernetes.podspec-fieldref: "enabled"
+  podDisruptionBudgets:
+  - name: activator-pdb
+    minAvailable: {{ .Values.minAvailable }}
