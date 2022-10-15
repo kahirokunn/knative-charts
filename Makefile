@@ -1,3 +1,4 @@
+KNATIVE_OPERATOR_VERSION = "v1.7.2"
 KNATIVE_SERVING_VERSION = "v1.7.2"
 CONTOUR_OPERATOR_VERSION = "v1.22.1"
 
@@ -100,3 +101,9 @@ download-contour-gateway:
 
 	# resolve image
 	cat contour-gateway/templates/download/controller.yaml | yq '.spec.template.spec.containers[0].image = "gcr.io/knative-releases/knative.dev/net-gateway-api/cmd/controller:latest"' | sponge contour-gateway/templates/download/controller.yaml
+
+download-knative-operator:
+	# https://github.com/knative-sandbox/net-gateway-api#contour
+	-rm -rf ./knative-operator/*
+	wget -P ./knative-operator https://github.com/knative/operator/releases/download/knative-${KNATIVE_SERVING_VERSION}/operator.yaml
+	cat knative-operator/operator.yaml | sed 's/namespace: default/namespace: knative-operator/g' | sponge knative-operator/operator.yaml
