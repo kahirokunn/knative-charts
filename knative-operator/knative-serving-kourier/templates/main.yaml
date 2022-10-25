@@ -19,3 +19,5 @@ spec:
   podDisruptionBudgets:
   - name: activator-pdb
     minAvailable: {{ .Values.minAvailable }}
+  - name: webhook-pdb
+    minAvailable: {{ .Values.minAvailable }}
