@@ -761,8 +761,7 @@ configAutoscaler:
 configDeployment:
   # This is the Go import path for the binary that is containerized
   # and substituted here.
-  # TODO: switch to 'queue-sidecar-image' after 0.27
-  queueSidecarImage: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:9b8dad0630029dfcab124e6b4fa7c8e39b453249f0b31282c48e008bfc16faa3
+  queue-sidecar-image: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:505179c0c4892ea4a70e78bc52ac21b03cd7f1a763d2ecc78e7bbaa1ae59c86c
   _example: |-
     ################################
     #                              #
@@ -834,6 +833,10 @@ configDeployment:
     #
     # NOTE THAT THIS IS AN EXPERIMENTAL / ALPHA FEATURE
     concurrency-state-endpoint: ""
+  # This is the Go import path for the binary that is containerized
+  # and substituted here.
+  # TODO: switch to 'queue-sidecar-image' after 0.27
+  queueSidecarImage: gcr.io/knative-releases/knative.dev/serving/cmd/queue@sha256:9b8dad0630029dfcab124e6b4fa7c8e39b453249f0b31282c48e008bfc16faa3
 # configmaps
 allowEmptyConfigMap: true
 zone:

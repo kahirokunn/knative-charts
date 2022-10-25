@@ -1,5 +1,5 @@
-KNATIVE_OPERATOR_VERSION = "v1.7.2"
-KNATIVE_SERVING_VERSION = "v1.7.2"
+KNATIVE_OPERATOR_VERSION = "v1.8.0"
+KNATIVE_SERVING_VERSION = "v1.8.0"
 CONTOUR_OPERATOR_VERSION = "v1.22.1"
 
 setup-mac:
@@ -9,6 +9,7 @@ download-all:
 	$(MAKE) download-knative-serving
 	$(MAKE) download-knative-serving-net-gateway-api
 	$(MAKE) download-contour-gateway
+	$(MAKE) download-knative-operator
 
 download-knative-serving:
 	# https://knative.dev/docs/install/yaml-install/serving/install-serving-with-yaml
@@ -104,6 +105,6 @@ download-contour-gateway:
 
 download-knative-operator:
 	# https://github.com/knative-sandbox/net-gateway-api#contour
-	-rm -rf ./knative-operator/*
-	wget -P ./knative-operator https://github.com/knative/operator/releases/download/knative-${KNATIVE_SERVING_VERSION}/operator.yaml
-	cat knative-operator/operator.yaml | sed 's/namespace: default/namespace: knative-operator/g' | sponge knative-operator/operator.yaml
+	-rm ./knative-operator/operator/*
+	wget -P ./knative-operator/operator https://github.com/knative/operator/releases/download/knative-${KNATIVE_SERVING_VERSION}/operator.yaml
+	cat knative-operator/operator/operator.yaml | sed 's/namespace: default/namespace: knative-operator/g' | sponge knative-operator/operator/operator.yaml
