@@ -9,6 +9,7 @@ spec:
   ingress:
     kourier:
       enabled: true
+      service-type: NodePort
   config:
     network:
       ingress-class: "kourier.ingress.networking.knative.dev"
