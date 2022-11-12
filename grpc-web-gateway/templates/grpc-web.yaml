@@ -20,7 +20,7 @@ apiVersion: gateway.networking.k8s.io/v1beta1
 metadata:
   name: {{ .Values.grpcWeb.gateway.class }}
 spec:
-  controllerName: projectcontour.io/gateway-controller
+  controllerName: projectcontour.io/projectcontour/contour
   parametersRef:
     kind: ContourDeployment
     group: projectcontour.io
@@ -35,9 +35,39 @@ metadata:
 spec:
   gatewayClassName: {{ .Values.grpcWeb.gateway.class }}
   listeners:
-    - name: http
+    - name: {{ .Values.grpcWeb.gateway.httpListener.name }}
       protocol: HTTP
       port: 80
       allowedRoutes:
         namespaces:
           from: All
+---
+apiVersion: operator.projectcontour.io/v1alpha1
+kind: Contour
+metadata:
+  name: {{ .Values.grpcWeb.gateway.name }}
+  namespace: {{ .Release.Namespace }}
+spec:
+  networkPublishing:
+    envoy:
+      type: ClusterIPService
+---
+apiVersion: gateway.networking.k8s.io/v1beta1
+kind: HTTPRoute
+metadata:
+  name: kourier-gateway
+  namespace: knative-serving
+spec:
+  parentRefs:
+    - name: {{ .Values.grpcWeb.gateway.name }}
+      namespace: {{ .Release.Namespace }}
+      sectionName: {{ .Values.grpcWeb.gateway.httpListener.name }}
+  rules:
+    - matches:
+        - path:
+            type: Exact
+            value: /
+      backendRefs:
+        - name: kourier-internal
+          namespace: knative-serving
+          port: 80

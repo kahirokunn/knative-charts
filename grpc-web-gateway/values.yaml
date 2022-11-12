@@ -3,5 +3,7 @@ grpcWeb:
   gateway:
     class: grpc-web
     name: grpc-web-gateway
+    httpListener:
+      name: http
 contourOperator:
   namespace: contour-operator
