@@ -3,6 +3,8 @@ grpcWeb:
   gateway:
     class: grpc-web
     name: grpc-web-gateway
+    controller:
+      name: projectcontour.io/projectcontour/contour
     httpListener:
       name: http
 contourOperator:

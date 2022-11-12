@@ -1,31 +1,13 @@
-kind: ContourDeployment
-apiVersion: projectcontour.io/v1alpha1
-metadata:
-  name: {{ .Values.grpcWeb.gateway.class }}
-  namespace: {{ .Release.Namespace }}
-spec:
-  envoy:
-    workloadType: Deployment
-    networkPublishing:
-      type: LoadBalancerService
-      serviceAnnotations:
-        service.beta.kubernetes.io/aws-load-balancer-type: external
-        service.beta.kubernetes.io/aws-load-balancer-nlb-target-type: instance
-        service.beta.kubernetes.io/aws-load-balancer-additional-resource-tags: "GatewayClass={{ .Values.grpcWeb.gateway.class }},ClusterName={{ required "Chart cannot be installed without a valid clusterName!" .Values.clusterName }}"
-        service.beta.kubernetes.io/aws-load-balancer-scheme: internet-facing
-        service.beta.kubernetes.io/aws-load-balancer-cross-zone-load-balancing-enabled: "true"
----
 kind: GatewayClass
 apiVersion: gateway.networking.k8s.io/v1beta1
 metadata:
   name: {{ .Values.grpcWeb.gateway.class }}
 spec:
-  controllerName: projectcontour.io/projectcontour/contour
+  controllerName: {{ .Values.grpcWeb.gateway.controller.name }}
   parametersRef:
-    kind: ContourDeployment
-    group: projectcontour.io
     name: {{ .Values.grpcWeb.gateway.class }}
-    namespace: {{ .Release.Namespace }}
+    group: operator.projectcontour.io
+    kind: Contour
 ---
 kind: Gateway
 apiVersion: gateway.networking.k8s.io/v1beta1
@@ -42,15 +24,32 @@ spec:
         namespaces:
           from: All
 ---
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: contour
+  namespace: {{ .Release.Namespace }}
+data:
+  contour.yaml: |
+    gateway:
+      controllerName: {{ .Values.grpcWeb.gateway.controller.name }}
+---
 apiVersion: operator.projectcontour.io/v1alpha1
 kind: Contour
 metadata:
-  name: {{ .Values.grpcWeb.gateway.name }}
+  name: {{ .Values.grpcWeb.gateway.class }}
   namespace: {{ .Release.Namespace }}
 spec:
+  replicas: 2
+  namespace:
+    name: {{ .Release.Namespace }}
   networkPublishing:
     envoy:
-      type: ClusterIPService
+      type: LoadBalancerService
+      loadBalancer:
+        providerParameters:
+          type: AWS
+        scope: External
 ---
 apiVersion: gateway.networking.k8s.io/v1beta1
 kind: HTTPRoute
