@@ -1,6 +1,6 @@
 KNATIVE_OPERATOR_VERSION = "v1.8.0"
 KNATIVE_SERVING_VERSION = "v1.8.0"
-CONTOUR_OPERATOR_VERSION = "v1.22.1"
+CONTOUR_OPERATOR_VERSION = "v1.23.0"
 
 setup-mac:
 	brew install sponge
@@ -85,6 +85,14 @@ download-knative-serving-net-gateway-api:
 	cat knative-serving-net-gateway-api/templates/download/controller.yaml | yq '.metadata.namespace = "{{ .Release.Namespace }}"' | sponge knative-serving-net-gateway-api/templates/download/controller.yaml
 	# resolve image
 	cat knative-serving-net-gateway-api/templates/download/controller.yaml | yq '.spec.template.spec.containers[0].image = "gcr.io/knative-releases/knative.dev/net-gateway-api/cmd/controller:latest"' | sponge knative-serving-net-gateway-api/templates/download/controller.yaml
+
+download-grpc-web-gateway:
+	# https://github.com/knative-sandbox/net-gateway-api#contour
+	-rm -rf ./grpc-web-gateway/templates/download/*
+	wget -P ./grpc-web-gateway/templates/download https://raw.githubusercontent.com/projectcontour/contour-operator/${CONTOUR_OPERATOR_VERSION}/examples/operator/operator.yaml
+
+	# replace namespace
+	gsed -z "s/namespace: contour-operator\n/namespace: {{ .Values.contourOperator.namespace }}\n/g" grpc-web-gateway/templates/download/operator.yaml | sponge grpc-web-gateway/templates/download/operator.yaml
 
 download-contour-gateway:
 	# https://github.com/knative-sandbox/net-gateway-api#contour

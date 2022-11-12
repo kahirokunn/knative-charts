@@ -1,0 +1,7 @@
+clusterName:
+grpcWeb:
+  gateway:
+    class: grpc-web
+    name: grpc-web-gateway
+contourOperator:
+  namespace: contour-operator
