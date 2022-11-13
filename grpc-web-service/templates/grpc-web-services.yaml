@@ -1,0 +1,82 @@
+{{- range $i, $service := .Values.grpcWebServices -}}
+apiVersion: projectcontour.io/v1
+kind: HTTPProxy
+metadata:
+  name: {{ $service.fqdn }}
+  namespace: {{ $.Values.gatewayServiceRef.namespace }}
+spec:
+  virtualhost:
+    fqdn: {{ $service.fqdn }}
+    corsPolicy:
+      allowCredentials: true
+      allowOrigin:
+      {{- toYaml $.Values.allowOrigin | nindent 6 }}
+      allowMethods:
+        - GET
+        - PUT
+        - DELETE
+        - POST
+        - OPTIONS
+      allowHeaders:
+        - keep-alive
+        - user-agent
+        - cache-control
+        - content-type
+        - content-transfer-encoding
+        - x-accept-content-transfer-encoding
+        - x-accept-response-streaming
+        - x-user-agent
+        - x-grpc-web
+        - grpc-timeout
+      exposeHeaders:
+        - grpc-status
+        - grpc-message
+        - Content-Length
+        - Content-Range
+      maxAge: {{ $.Values.maxAge }}
+  routes:
+    - conditions:
+      - prefix: /
+      services:
+        - name: {{ $.Values.gatewayServiceRef.name }}
+          port: {{ $.Values.gatewayServiceRef.port }}
+          protocol: {{ $.Values.gatewayServiceRef.protocol }}
+      timeoutPolicy:
+        {{- toYaml $.Values.timeoutPolicy | nindent 8 }}
+---
+apiVersion: serving.knative.dev/v1alpha1
+kind: DomainMapping
+metadata:
+  name: {{ $service.fqdn }}
+  namespace: {{ $service.serviceRef.namespace }}
+spec:
+  ref:
+    name: {{ $service.serviceRef.name }}
+    kind: Service
+    apiVersion: serving.knative.dev/v1
+---
+{{- end -}}
+{{- if .Values.ingress.enabled -}}
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ $.Values.ingress.name }}
+  namespace: {{ $.Values.ingress.service.namespace }}
+  annotations:
+    {{- toYaml $.Values.ingress.annotations | nindent 4 }}
+spec:
+  ingressClassName: {{ $.Values.ingress.ingressClassName }}
+  rules:
+  {{ range $i, $service := .Values.grpcWebServices }}
+  - host: {{ $service.fqdn }}
+    http:
+      paths:
+      - path: /
+        pathType: Prefix
+        backend:
+          service:
+            name: {{ $.Values.ingress.service.name }}
+            port:
+              name: http
+  {{- end -}}
+{{- end -}}

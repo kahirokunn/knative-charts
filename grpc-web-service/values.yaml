@@ -1,0 +1,37 @@
+maxAge: 10m
+timeoutPolicy:
+  response: infinity
+  idle: infinity
+  idleConnection: 60s
+allowOrigin:
+- "*"
+gatewayServiceRef:
+  name: kourier-internal
+  namespace: default
+  port: 80
+  protocol: h2c
+grpcWebServices:
+# - fqdn: grpc-helloworld.default.svc.cluster.local
+#   serviceRef:
+#     name: grpc-helloworld
+#     namespace: default
+# - fqdn: grpc-ping.default.svc.cluster.local
+#   serviceRef:
+#     name: grpc-ping
+#     namespace: default
+ingress:
+  enabled: false
+  name: contour-ingress
+  ingressClassName: alb
+  service:
+    name: contour-envoy
+    namespace: projectcontour
+  annotations:
+    # alb.ingress.kubernetes.io/wafv2-acl-arn: <wafv2-acl-arn>
+    # alb.ingress.kubernetes.io/certificate-arn: <certificate-arn>
+    # alb.ingress.kubernetes.io/listen-ports: '[{"HTTP": 80}, {"HTTPS":443}]'
+    # alb.ingress.kubernetes.io/scheme: internet-facing
+    # alb.ingress.kubernetes.io/target-type: ip
+    # alb.ingress.kubernetes.io/ssl-redirect: "443"
+    # alb.ingress.kubernetes.io/tags: Service=grpc-web-service
+    # alb.ingress.kubernetes.io/load-balancer-attributes: access_logs.s3.enabled=true,access_logs.s3.bucket=alb-logging,access_logs.s3.prefix=contour-ingress,idle_timeout.timeout_seconds=3600
